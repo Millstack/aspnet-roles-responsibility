@@ -25,37 +25,38 @@
 </head>
 <body>
     <form id="form1" runat="server">
-        <div>
-            <label for="email" class="col-form-label mb-1 text-dark fs-6 shadow border">
-                <i class="icon-wpforms mr-2"></i>
+
+        <div class="mx-5 col-md-8 mt-4 mb-2">
+            <label for="email" class="text-dark fs-5 fw-normal">
                 <asp:Literal ID="Literal3" Text="EMB Recording" runat="server"></asp:Literal>
             </label>
         </div>
-        <div class="card no-b no-r px-4">
+
+        <div class="card mx-5 col-md-8 shadow px-4">
             <div class="card-body">
-                <div class="form-row mt-3">
-                    <div class="form-group col-md-6 m-0">
-                        <label for="email" class="col-form-label mb-1 text-dark fs-6 shadow border">
-                            <i class="icon-wpforms mr-2"></i>
-                            <asp:Literal ID="Literal1" Text="Role" runat="server"></asp:Literal>
-                        </label>
-                        <div>
-                            <asp:RequiredFieldValidator ID="RequiredFieldValidator" CssClass="invalid-feedback" InitialValue="0" runat="server" ErrorMessage="Please select any role" SetFocusOnError="True" Display="Dynamic" ToolTip="Required" ControlToValidate="ddlRole"></asp:RequiredFieldValidator>
-                        </div>
-                        <div class="shadow ">
-                            <asp:DropDownList ID="ddlRole" ClientIDMode="Static" runat="server" OnSelectedIndexChanged="ddlRole_SelectedIndexChanged" AutoPostBack="true" class="form-control is-invalid"></asp:DropDownList>
-                        </div>
+
+                <!-- Roles -->
+                <div class="form-group col-6 mt-3">
+                    <label for="email" class="col-form-label badge bg-primary text-wrap mb-4 fs-6 shadow border">
+                        <i class="icon-wpforms mr-2"></i>
+                        <asp:Literal ID="Literal1" Text="Roles" runat="server"></asp:Literal>
+                    </label>
+                </div>
+
+                <!-- Dropdown -->
+                <div class="mt-1 mb-3">
+                    <asp:RequiredFieldValidator ID="RequiredFieldValidator" ControlToValidate="ddlRole" InitialValue="0" runat="server" ErrorMessage="Please select any role" SetFocusOnError="True" Display="Dynamic" CssClass="invalid-feedback" ToolTip="Required"></asp:RequiredFieldValidator>
+                    <div class="shadow ">
+                        <asp:DropDownList ID="ddlRole" ClientIDMode="Static" runat="server" OnSelectedIndexChanged="ddlRole_SelectedIndexChanged" AutoPostBack="true" class="form-control is-invalid"></asp:DropDownList>
                     </div>
                 </div>
 
-                <div class="form-row mt-5">
-                    <div class="form-group col-6 m-0">
-                        <label for="email" class="col-form-label badge bg-primary text-wrap mb-4 fs-6 shadow border">
-                            <i class="icon-wpforms mr-2"></i>
-                            <asp:Literal ID="Literal2" Text="Responsibilities" runat="server"></asp:Literal>
-                        </label>
-                    </div>
-                    <div class="form-group col-6 m-0"></div>
+                <!-- Responsibilities -->
+                <div class="form-group col-6 mt-5">
+                    <label for="email" class="col-form-label badge bg-primary text-wrap mb-4 fs-6 shadow border">
+                        <i class="icon-wpforms mr-2"></i>
+                        <asp:Literal ID="Literal2" Text="Responsibilities" runat="server"></asp:Literal>
+                    </label>
                 </div>
 
                 <div class="form-row mt-1">
