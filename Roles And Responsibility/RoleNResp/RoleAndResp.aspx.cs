@@ -21,94 +21,105 @@ public partial class RoleNResp_RoleAndResp : System.Web.UI.Page
         public string AccessKey { get; set; }
     }
 
-    //private DataTable getApiCall(string sql, Dictionary<string, string> para)
-    //{
-    //    Api mPara = new Api
-    //    {
-    //        Command = sql,
-    //        Parameters = para,
-    //        Connection = "Ginie"
-    //    };
+    private DataTable getApiCall(string sql, Dictionary<string, string> para)
+    {
+        Api mPara = new Api
+        {
+            Command = sql,
+            Parameters = para,
+            Connection = "Ginie"
+        };
 
-    //    string jsonContent = JsonConvert.SerializeObject(mPara);
-    //    StringContent stringContent = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+        string jsonContent = JsonConvert.SerializeObject(mPara);
+        StringContent stringContent = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
-    //    string apiUrl = "http://101.53.144.92/wms/api/Get/Table";
+        string apiUrl = "http://101.53.144.92/wms/api/Get/Table";
 
-    //    using (HttpClient client = new HttpClient())
-    //    {
-    //        HttpResponseMessage response = client.PostAsync(apiUrl, stringContent).Result;
+        using (HttpClient client = new HttpClient())
+        {
+            HttpResponseMessage response = client.PostAsync(apiUrl, stringContent).Result;
 
-    //        if (response.IsSuccessStatusCode)
-    //        {
-    //            string jsonResponse = response.Content.ReadAsStringAsync().Result;
+            if (response.IsSuccessStatusCode)
+            {
+                string jsonResponse = response.Content.ReadAsStringAsync().Result;
 
-    //            DataTable dt = JsonConvert.DeserializeObject<DataTable>(jsonResponse);
+                DataTable dt = JsonConvert.DeserializeObject<DataTable>(jsonResponse);
 
-    //            return dt;
-    //        }
-    //        else
-    //        {
-    //            return new DataTable();
-    //        }
-    //    }
-    //}
+                return dt;
+            }
+            else
+            {
+                return new DataTable();
+            }
+        }
+    }
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        // PEOJECT  : MPKV
-        // CODE     : 722
+        // PEOJECT  : SCEA
+        // CODE     : 724
 
         if (!IsPostBack)
         {
             Bind_Role();
             DataTable dtResp = GetResponsibilitiesData();
-            BuildTreeView(dtResp, null);
+            //BuildTreeView(dtResp, null);
         }
     }
 
     public void Bind_Role()
     {
-        using (SqlConnection con = new SqlConnection(connectionString))
-        {
-            con.Open();
-            string sql = "select UserRole, RoleName, HomePage from UserRoles722";
-            SqlCommand cmd = new SqlCommand(sql, con);
+        string sql = "select UserRole, RoleName, HomePage from UserRoles724";
+        Dictionary<string, string> para = new Dictionary<string, string>();
+        //para["ParameterName1"] = "Value1";
+        DataTable dt = getApiCall(sql, para);
 
-            SqlDataAdapter ad = new SqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
-            ad.Fill(dt);
-            con.Close();
+        ddlRole.DataSource = dt;
+        ddlRole.DataTextField = "RoleName";
+        //ddlRole.DataValueField = "UserRoleID";
+        ddlRole.DataBind();
+        ddlRole.Items.Insert(0, new ListItem("------Select Role------", "0"));
 
-            ddlRole.DataSource = dt;
-            ddlRole.DataTextField = "RoleName";
-            //ddlRole.DataValueField = "UserRoleID";
-            ddlRole.DataBind();
-            ddlRole.Items.Insert(0, new ListItem("------Select Role------", "0"));
-        }
+        //using (SqlConnection con = new SqlConnection(connectionString))
+        //{
+        //    con.Open();
+        //    string sql = "select UserRole, RoleName, HomePage from UserRoles724";
+        //    SqlCommand cmd = new SqlCommand(sql, con);
+
+        //    SqlDataAdapter ad = new SqlDataAdapter(cmd);
+        //    DataTable dt = new DataTable();
+        //    ad.Fill(dt);
+        //    con.Close();
+
+        //    ddlRole.DataSource = dt;
+        //    ddlRole.DataTextField = "RoleName";
+        //    //ddlRole.DataValueField = "UserRoleID";
+        //    ddlRole.DataBind();
+        //    ddlRole.Items.Insert(0, new ListItem("------Select Role------", "0"));
+        //}
     }
 
     private DataTable GetResponsibilitiesData()
     {
-        //string sql = "select Seq, MenuText, MenuParent, MenuCode, Publish from MenuBars722 where Publish = 'YES' and MenuParent != ''";
-        //Dictionary<string, string> para = new Dictionary<string, string>();
-        ////para["ParameterName1"] = "Value1";
-        //DataTable dt = getApiCall(sql, para);
-        //return dt;
+        string sql = "select Seq, MenuText, MenuParent, MenuCode, Publish from MenuBars724 where Publish = 'YES' and MenuParent != ''";
+        Dictionary<string, string> para = new Dictionary<string, string>();
+        //para["ParameterName1"] = "Value1";
+        DataTable dt = getApiCall(sql, para);
+        return dt;
 
-        using (SqlConnection con = new SqlConnection(connectionString))
-        {
-            con.Open();
-            string sql = "select Seq, MenuText, MenuParent, MenuCode, Publish from MenuBars722 where Publish = 'YES' and MenuParent != ''";
-            SqlCommand cmd = new SqlCommand(sql, con);
+        //using (SqlConnection con = new SqlConnection(connectionString))
+        //{
+        //    con.Open();
+        //    string sql = "select Seq, MenuText, MenuParent, MenuCode, Publish from MenuBars724 where Publish = 'YES' and MenuParent != ''";
+        //    SqlCommand cmd = new SqlCommand(sql, con);
 
-            SqlDataAdapter ad = new SqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
-            ad.Fill(dt);
-            con.Close();
+        //    SqlDataAdapter ad = new SqlDataAdapter(cmd);
+        //    DataTable dt = new DataTable();
+        //    ad.Fill(dt);
+        //    con.Close();
 
-            return dt;
-        }
+        //    return dt;
+        //}
     }
 
     //============================================={ Building TreeView }===========================================================
@@ -192,15 +203,21 @@ public partial class RoleNResp_RoleAndResp : System.Web.UI.Page
 
     protected Boolean CheckForNodeIsParent(string menuCode)
     {
-        using (SqlConnection con = new SqlConnection(connectionString))
-        {
-            con.Open();
-            string sql = "SELECT TOP 1 1 FROM MenuBars722 WHERE MenuParent = @MenuCode";
-            SqlCommand cmd = new SqlCommand(sql, con);
-            cmd.Parameters.AddWithValue("@MenuCode", menuCode);
+        string sql = "SELECT TOP 1 1 FROM MenuBars724 WHERE MenuParent = @MenuCode";
+        Dictionary<string, string> para = new Dictionary<string, string>();
+        para["MenuCode"] = menuCode;
+        DataTable dt = getApiCall(sql, para);
+        return true;
 
-            return cmd.ExecuteScalar() != null;
-        }
+        //using (SqlConnection con = new SqlConnection(connectionString))
+        //{
+        //    con.Open();
+        //    string sql = "SELECT TOP 1 1 FROM MenuBars724 WHERE MenuParent = @MenuCode";
+        //    SqlCommand cmd = new SqlCommand(sql, con);
+        //    cmd.Parameters.AddWithValue("@MenuCode", menuCode);
+
+        //    return cmd.ExecuteScalar() != null;
+        //}
     }
 
     protected Boolean CheckForParentNodePublishAsYes(string menuCode)
@@ -209,7 +226,7 @@ public partial class RoleNResp_RoleAndResp : System.Web.UI.Page
         {
             con.Open();
             string sql = "select m1.Seq, m1.MenuText, m1.MenuParent, m1.MenuCode, m1.Publish " +
-                         "from MenuBars722 m1, MenuBars722 m2 " +
+                         "from MenuBars724 m1, MenuBars724 m2 " +
                          "where m1.MenuParent = m2.MenuCode and m2.Publish = 'YES' and m1.MenuCode = @MenuCode";
 
             SqlCommand cmd = new SqlCommand(sql, con);
@@ -238,7 +255,7 @@ public partial class RoleNResp_RoleAndResp : System.Web.UI.Page
         using (SqlConnection con = new SqlConnection(connectionString))
         {
             con.Open();
-            string sql = "WITH SplitResponsibilities AS (SELECT UserRole, value AS Responsibility FROM mnu722 CROSS APPLY STRING_SPLIT(Responsibility, ','))" +
+            string sql = "WITH SplitResponsibilities AS (SELECT UserRole, value AS Responsibility FROM mnu724 CROSS APPLY STRING_SPLIT(Responsibility, ','))" +
                          "SELECT UserRole,Responsibility FROM SplitResponsibilities where UserRole = @UserRole";
             SqlCommand cmd = new SqlCommand(sql, con);
             cmd.Parameters.AddWithValue("@UserRole", selectedRole.ToString());
@@ -376,7 +393,7 @@ public partial class RoleNResp_RoleAndResp : System.Web.UI.Page
         using (SqlConnection con = new SqlConnection(connectionString))
         {
             con.Open();
-            string sql = "SELECT UserRole, Responsibility FROM mnu722 WHERE UserRole = @UserRole";
+            string sql = "SELECT UserRole, Responsibility FROM mnu724 WHERE UserRole = @UserRole";
             SqlCommand cmd = new SqlCommand(sql, con);
             cmd.Parameters.AddWithValue("@UserRole", selectedRole.ToString());
             cmd.ExecuteNonQuery();
@@ -397,7 +414,7 @@ public partial class RoleNResp_RoleAndResp : System.Web.UI.Page
         using (SqlConnection con = new SqlConnection(connectionString))
         {
             con.Open();
-            string sql = "WITH SplitResponsibilities AS (SELECT UserRole, value AS Responsibility FROM mnu722 CROSS APPLY STRING_SPLIT(Responsibility, ','))" +
+            string sql = "WITH SplitResponsibilities AS (SELECT UserRole, value AS Responsibility FROM mnu724 CROSS APPLY STRING_SPLIT(Responsibility, ','))" +
                          "SELECT UserRole, Responsibility FROM SplitResponsibilities where UserRole = @UserRole";
             SqlCommand cmd = new SqlCommand(sql, con);
             cmd.Parameters.AddWithValue("@UserRole", selectedRole.ToString());
@@ -414,7 +431,7 @@ public partial class RoleNResp_RoleAndResp : System.Web.UI.Page
         using (SqlConnection con = new SqlConnection(connectionString))
         {
             con.Open();
-            string sql = "INSERT INTO mnu722 (UserRole) VALUES (@UserRole)";
+            string sql = "INSERT INTO mnu724 (UserRole) VALUES (@UserRole)";
             SqlCommand cmd = new SqlCommand(sql, con);
             cmd.Parameters.AddWithValue("@UserRole", selectedRole.ToString());
             cmd.ExecuteNonQuery();
@@ -447,7 +464,7 @@ public partial class RoleNResp_RoleAndResp : System.Web.UI.Page
         using (SqlConnection con = new SqlConnection(connectionString))
         {
             con.Open();
-            string updateSql = "UPDATE mnu722 SET Responsibility = @Responsibilities WHERE UserRole = @UserRole";
+            string updateSql = "UPDATE mnu724 SET Responsibility = @Responsibilities WHERE UserRole = @UserRole";
             SqlCommand updateCmd = new SqlCommand(updateSql, con);
             updateCmd.Parameters.AddWithValue("@Responsibilities", updatedResponsibilities);
             updateCmd.Parameters.AddWithValue("@UserRole", selectedRole);
